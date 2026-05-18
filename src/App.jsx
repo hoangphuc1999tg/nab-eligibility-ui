@@ -82,14 +82,20 @@ function SecondaryButton({ children }) {
 function ReviewerNotes({ title, items }) {
   return (
     <aside className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-wide" style={{ color: NAB_RED }}>
+      <p
+        className="text-xs font-bold uppercase tracking-wide"
+        style={{ color: NAB_RED }}
+      >
         Reviewer notes
       </p>
       <h3 className="mt-1 text-lg font-bold text-slate-950">{title}</h3>
       <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
         {items.map((item) => (
           <li key={item} className="flex gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: NAB_RED }} />
+            <span
+              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{ backgroundColor: NAB_RED }}
+            />
             <span>{item}</span>
           </li>
         ))}
@@ -116,29 +122,30 @@ function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
     <IPhoneMockup>
       <MobileTopBar title="Home loan eligibility" />
 
-      <div className="px-6 pt-8">
+      <div className="px-6 pt-6">
         <div className="text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-50">
-            <Home className="h-10 w-10" style={{ color: NAB_RED }} />
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+            <Home className="h-8 w-8" style={{ color: NAB_RED }} />
           </div>
 
-          <p className="mt-6 text-sm text-slate-500">Check your eligibility</p>
-          <h2 className="mt-2 text-3xl font-bold leading-tight text-slate-950">
+          <p className="mt-5 text-sm text-slate-500">Check your eligibility</p>
+          <h2 className="mt-1 text-2xl font-bold leading-tight text-slate-950">
             In a few seconds
           </h2>
-          <p className="mt-3 text-sm leading-6 text-slate-600">
-            Enter your National ID to run a conditional home loan eligibility
-            pre-check.
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Enter your National ID to run a conditional home loan pre-check.
           </p>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <label className="block text-sm font-bold text-slate-900">
             National ID
           </label>
           <input
             value={nationalId}
-            onChange={(event) => setNationalId(event.target.value.replace(/\D/g, "").slice(0, 12))}
+            onChange={(event) =>
+              setNationalId(event.target.value.replace(/\D/g, "").slice(0, 12))
+            }
             className={`mt-2 w-full border-b bg-white px-0 py-3 text-lg font-semibold text-slate-950 outline-none focus:border-red-700 ${
               error ? "border-red-600" : "border-slate-300"
             }`}
@@ -151,21 +158,19 @@ function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
             </p>
           ) : (
             <p className="mt-3 text-xs leading-5 text-slate-500">
-              Your ID is used for verification with authorised data sources. Raw
-              ID is not persisted.
+              Raw ID is used for verification only and is not persisted.
             </p>
           )}
         </div>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <PrimaryButton onClick={onCheck}>Check eligibility</PrimaryButton>
         </div>
 
-        <div className="mt-8 divide-y divide-slate-100 border-t border-b border-slate-100">
+        <div className="mt-6 divide-y divide-slate-100 border-t border-b border-slate-100">
           {[
             ["What we check", "Age, address, criminal record and credit score"],
             ["Expected time", "Usually under 3 seconds"],
-            ["Need help?", "Contact a banker"],
           ].map(([title, sub]) => (
             <div key={title} className="flex items-center justify-between py-4">
               <div>
@@ -402,7 +407,9 @@ function BankerPortal() {
           </div>
 
           <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-            <h3 className="font-bold text-slate-950">External System Status</h3>
+            <h3 className="font-bold text-slate-950">
+              External System Status
+            </h3>
             <div className="mt-4 overflow-hidden border-t border-slate-100">
               <table className="w-full text-left text-sm">
                 <thead className="text-xs uppercase text-slate-500">
@@ -533,24 +540,22 @@ export default function NABHomeLendingMockup() {
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
-            <p
-              className="text-sm font-bold uppercase tracking-wide"
-              style={{ color: NAB_RED }}
-            >
-              UI Mock-up & Specification
-            </p>
-            <h1 className="mt-2 text-3xl font-bold text-slate-950">
-              Home Loan Eligibility Check
-            </h1>
-            <p className="mt-2 max-w-3xl text-slate-600">
-              Interactive mock-up for the Technical BA assignment, demonstrating
-              the customer eligibility check flow and banker result view.
-            </p>
-          </div>
+        <div className="mb-6">
+          <p
+            className="text-sm font-bold uppercase tracking-wide"
+            style={{ color: NAB_RED }}
+          >
+            UI Mock-up & Specification
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-950">
+            Home Loan Eligibility Check
+          </h1>
+          <p className="mt-2 max-w-3xl text-slate-600">
+            Interactive mock-up for the Technical BA assignment, demonstrating
+            the customer eligibility check flow and banker result view.
+          </p>
 
-          <div className="flex flex-wrap gap-2 rounded-2xl bg-white p-2 shadow-sm">
+          <div className="mt-5 flex w-fit max-w-full flex-wrap gap-2 rounded-2xl bg-white p-2 shadow-sm">
             {screens.map(([key, label]) => (
               <button
                 key={key}
