@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CheckCircle2,
   XCircle,
@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 const NAB_RED = "#C40000";
+const NATIONAL_ID_REGEX = /^\d{12}$/;
 
 function Pill({ children, tone = "neutral" }) {
   const tones = {
@@ -34,7 +35,6 @@ function IPhoneMockup({ children }) {
   return (
     <div className="mx-auto w-full max-w-[390px] rounded-[42px] bg-black p-[10px] shadow-2xl">
       <div className="relative min-h-[760px] overflow-hidden rounded-[34px] bg-white">
-        {/* Dynamic island */}
         <div className="absolute left-1/2 top-3 z-20 h-7 w-36 -translate-x-1/2 rounded-full bg-black" />
         {children}
       </div>
@@ -56,10 +56,14 @@ function MobileTopBar({ title }) {
   );
 }
 
-function PrimaryButton({ children }) {
+function PrimaryButton({ children, onClick, disabled = false }) {
   return (
     <button
-      className="w-full rounded-xl px-5 py-3.5 text-sm font-bold text-white shadow-sm"
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-full rounded-xl px-5 py-3.5 text-sm font-bold text-white shadow-sm transition ${
+        disabled ? "cursor-not-allowed opacity-50" : "hover:brightness-95"
+      }`}
       style={{ backgroundColor: NAB_RED }}
     >
       {children}
@@ -75,7 +79,39 @@ function SecondaryButton({ children }) {
   );
 }
 
-function NationalIdScreen() {
+function ReviewerNotes({ title, items }) {
+  return (
+    <aside className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-wide" style={{ color: NAB_RED }}>
+        Reviewer notes
+      </p>
+      <h3 className="mt-1 text-lg font-bold text-slate-950">{title}</h3>
+      <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: NAB_RED }} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+}
+
+function MockupLayout({ children, noteTitle, notes, wide = false }) {
+  return (
+    <div
+      className={`grid items-start gap-6 ${
+        wide ? "lg:grid-cols-[minmax(0,1fr)_360px]" : "lg:grid-cols-[420px_360px]"
+      }`}
+    >
+      <div>{children}</div>
+      <ReviewerNotes title={noteTitle} items={notes} />
+    </div>
+  );
+}
+
+function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
   return (
     <IPhoneMockup>
       <MobileTopBar title="Home loan eligibility" />
@@ -101,19 +137,28 @@ function NationalIdScreen() {
             National ID
           </label>
           <input
-            value="079******789"
-            readOnly
-            className="mt-2 w-full border-b border-slate-300 bg-white px-0 py-3 text-lg font-semibold text-slate-950 outline-none focus:border-red-700"
-            placeholder="Enter your National ID"
+            value={nationalId}
+            onChange={(event) => setNationalId(event.target.value.replace(/\D/g, "").slice(0, 12))}
+            className={`mt-2 w-full border-b bg-white px-0 py-3 text-lg font-semibold text-slate-950 outline-none focus:border-red-700 ${
+              error ? "border-red-600" : "border-slate-300"
+            }`}
+            placeholder="Enter 12-digit National ID"
+            inputMode="numeric"
           />
-          <p className="mt-3 text-xs leading-5 text-slate-500">
-            Your ID is used for verification with authorised data sources. Raw
-            ID is not persisted.
-          </p>
+          {error ? (
+            <p className="mt-3 text-xs font-semibold leading-5 text-red-700">
+              {error}
+            </p>
+          ) : (
+            <p className="mt-3 text-xs leading-5 text-slate-500">
+              Your ID is used for verification with authorised data sources. Raw
+              ID is not persisted.
+            </p>
+          )}
         </div>
 
         <div className="mt-8">
-          <PrimaryButton>Check eligibility</PrimaryButton>
+          <PrimaryButton onClick={onCheck}>Check eligibility</PrimaryButton>
         </div>
 
         <div className="mt-8 divide-y divide-slate-100 border-t border-b border-slate-100">
@@ -389,8 +434,73 @@ function BankerPortal() {
   );
 }
 
+const notesByScreen = {
+  input: {
+    title: "Input screen logic",
+    notes: [
+      "Validates National ID format locally before backend call.",
+      "For this mock-up, valid format = 12 numeric digits.",
+      "A valid submission creates an eligibility check and moves to loading.",
+    ],
+  },
+  loading: {
+    title: "Processing logic",
+    notes: [
+      "Represents the 3-second eligibility check SLA.",
+      "NDC is called first; CMS and CIC run in parallel after NDC success.",
+      "Auto-transition only happens when loading is reached from the input flow.",
+    ],
+  },
+  eligible: {
+    title: "Eligible result logic",
+    notes: [
+      "Shown when all mandatory rules pass.",
+      "Customer sees a simplified outcome, not internal rule details.",
+      "Final transaction status = ELIGIBLE.",
+    ],
+  },
+  notEligible: {
+    title: "Not Eligible result logic",
+    notes: [
+      "Shown when one or more completed mandatory rules fail.",
+      "Detailed reason codes are kept for banker/compliance view.",
+      "Not Eligible is a completed outcome, not an exception.",
+    ],
+  },
+  unable: {
+    title: "Unable to Verify logic",
+    notes: [
+      "Shown when a mandatory check cannot be completed.",
+      "Examples: NDC cannot confirm citizen, CMS/CIC timeout, missing data.",
+      "Final transaction status = UNABLE_TO_VERIFY.",
+    ],
+  },
+  banker: {
+    title: "Banker view logic",
+    notes: [
+      "Shows full rule-level assessment and reason codes.",
+      "Shows external system status and latency for traceability.",
+      "Raw National ID is not displayed.",
+    ],
+  },
+};
+
 export default function NABHomeLendingMockup() {
   const [screen, setScreen] = useState("input");
+  const [nationalId, setNationalId] = useState("");
+  const [inputError, setInputError] = useState("");
+  const [autoLoading, setAutoLoading] = useState(false);
+
+  useEffect(() => {
+    if (screen !== "loading" || !autoLoading) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setScreen("eligible");
+      setAutoLoading(false);
+    }, 3000);
+
+    return () => window.clearTimeout(timer);
+  }, [screen, autoLoading]);
 
   const screens = [
     ["input", "Input"],
@@ -401,6 +511,25 @@ export default function NABHomeLendingMockup() {
     ["banker", "Banker Portal"],
   ];
 
+  const handleTabClick = (key) => {
+    setAutoLoading(false);
+    setInputError("");
+    setScreen(key);
+  };
+
+  const handleCheckEligibility = () => {
+    if (!NATIONAL_ID_REGEX.test(nationalId)) {
+      setInputError("Please enter a valid 12-digit National ID.");
+      return;
+    }
+
+    setInputError("");
+    setAutoLoading(true);
+    setScreen("loading");
+  };
+
+  const currentNotes = notesByScreen[screen];
+
   return (
     <div className="min-h-screen bg-slate-100 p-4 md:p-8">
       <div className="mx-auto max-w-7xl">
@@ -410,14 +539,14 @@ export default function NABHomeLendingMockup() {
               className="text-sm font-bold uppercase tracking-wide"
               style={{ color: NAB_RED }}
             >
-              NAB-inspired UI mock-up
+              UI Mock-up & Specification
             </p>
             <h1 className="mt-2 text-3xl font-bold text-slate-950">
               Home Loan Eligibility Check
             </h1>
             <p className="mt-2 max-w-3xl text-slate-600">
-              Updated version with iPhone mockup, no bottom nav, and less-rounded
-              controls while keeping a clean NAB-inspired banking style.
+              Interactive mock-up for the Technical BA assignment, demonstrating
+              the customer eligibility check flow and banker result view.
             </p>
           </div>
 
@@ -425,9 +554,11 @@ export default function NABHomeLendingMockup() {
             {screens.map(([key, label]) => (
               <button
                 key={key}
-                onClick={() => setScreen(key)}
+                onClick={() => handleTabClick(key)}
                 className={`rounded-lg px-4 py-2 text-sm font-bold transition ${
-                  screen === key ? "text-white" : "text-slate-600 hover:bg-slate-50"
+                  screen === key
+                    ? "text-white"
+                    : "text-slate-600 hover:bg-slate-50"
                 }`}
                 style={screen === key ? { backgroundColor: NAB_RED } : {}}
               >
@@ -437,12 +568,50 @@ export default function NABHomeLendingMockup() {
           </div>
         </div>
 
-        {screen === "input" && <NationalIdScreen />}
-        {screen === "loading" && <LoadingScreen />}
-        {screen === "eligible" && <ResultScreen status="eligible" />}
-        {screen === "notEligible" && <ResultScreen status="notEligible" />}
-        {screen === "unable" && <ResultScreen status="unable" />}
-        {screen === "banker" && <BankerPortal />}
+        {screen === "input" && (
+          <MockupLayout noteTitle={currentNotes.title} notes={currentNotes.notes}>
+            <NationalIdScreen
+              nationalId={nationalId}
+              setNationalId={setNationalId}
+              error={inputError}
+              onCheck={handleCheckEligibility}
+            />
+          </MockupLayout>
+        )}
+
+        {screen === "loading" && (
+          <MockupLayout noteTitle={currentNotes.title} notes={currentNotes.notes}>
+            <LoadingScreen />
+          </MockupLayout>
+        )}
+
+        {screen === "eligible" && (
+          <MockupLayout noteTitle={currentNotes.title} notes={currentNotes.notes}>
+            <ResultScreen status="eligible" />
+          </MockupLayout>
+        )}
+
+        {screen === "notEligible" && (
+          <MockupLayout noteTitle={currentNotes.title} notes={currentNotes.notes}>
+            <ResultScreen status="notEligible" />
+          </MockupLayout>
+        )}
+
+        {screen === "unable" && (
+          <MockupLayout noteTitle={currentNotes.title} notes={currentNotes.notes}>
+            <ResultScreen status="unable" />
+          </MockupLayout>
+        )}
+
+        {screen === "banker" && (
+          <MockupLayout
+            noteTitle={currentNotes.title}
+            notes={currentNotes.notes}
+            wide
+          >
+            <BankerPortal />
+          </MockupLayout>
+        )}
       </div>
     </div>
   );
