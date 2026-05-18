@@ -86,7 +86,7 @@ function ReviewerNotes({ title, items }) {
         className="text-xs font-bold uppercase tracking-wide"
         style={{ color: NAB_RED }}
       >
-        Reviewer notes
+        Key Logic Notes
       </p>
       <h3 className="mt-1 text-lg font-bold text-slate-950">{title}</h3>
       <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
