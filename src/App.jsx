@@ -45,9 +45,9 @@ function IPhoneMockup({ children }) {
 function MobileTopBar({ title }) {
   return (
     <div className="border-b border-slate-100 bg-white px-5 pb-3 pt-14">
-      <div className="grid grid-cols-3 items-center">
+      <div className="grid grid-cols-[32px_1fr_32px] items-center">
         <ArrowLeft className="h-5 w-5" style={{ color: NAB_RED }} />
-        <h1 className="text-center text-[17px] font-bold text-slate-950">
+        <h1 className="truncate whitespace-nowrap text-center text-[16px] font-bold text-slate-950">
           {title}
         </h1>
         <div />
