@@ -130,22 +130,17 @@ function NationalIdScreen({
     <IPhoneMockup>
       <MobileTopBar title="Home loan eligibility" />
 
-      <div className="px-6 pb-32 pt-6">
-        <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-            <Home className="h-8 w-8" style={{ color: NAB_RED }} />
-          </div>
+      <div className="px-6 pb-28 pt-7">
+        <p className="text-sm text-slate-500">Check your eligibility</p>
+        <h2 className="mt-2 text-2xl font-bold leading-tight text-slate-950">
+          Get a quick home loan pre-check
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">
+          Enter your National ID to check basic eligibility. This usually takes
+          a few seconds.
+        </p>
 
-          <p className="mt-5 text-sm text-slate-500">Check your eligibility</p>
-          <h2 className="mt-1 text-2xl font-bold leading-tight text-slate-950">
-            In a few seconds
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Enter your National ID to run a conditional home loan pre-check.
-          </p>
-        </div>
-
-        <div className="mt-6">
+        <div className="mt-7">
           <label className="block text-sm font-bold text-slate-900">
             National ID
           </label>
@@ -162,17 +157,17 @@ function NationalIdScreen({
           />
 
           {error ? (
-            <p className="mt-3 text-xs font-semibold leading-5 text-red-700">
+            <p className="mt-2 text-xs font-semibold leading-5 text-red-700">
               {error}
             </p>
           ) : (
-            <p className="mt-3 text-xs leading-5 text-slate-500">
+            <p className="mt-2 text-xs leading-5 text-slate-500">
               Raw ID is used for verification only and is not persisted.
             </p>
           )}
         </div>
 
-        <label className="mt-5 flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <label className="mt-5 flex items-start gap-3">
           <input
             type="checkbox"
             checked={consent}
@@ -180,8 +175,8 @@ function NationalIdScreen({
             className="mt-1 h-4 w-4 accent-red-700"
           />
           <span className="text-xs leading-5 text-slate-700">
-            I consent to Bank A using my National ID to check my home loan
-            eligibility with authorised data sources.
+            I consent to Bank A using my National ID to check my eligibility
+            with authorised data sources.
           </span>
         </label>
 
@@ -191,19 +186,14 @@ function NationalIdScreen({
           </p>
         )}
 
-        <div className="mt-5 divide-y divide-slate-100 border-t border-b border-slate-100">
-          {[
-            ["What we check", "Age, address, criminal record and credit score"],
-            ["Expected time", "Usually under 3 seconds"],
-          ].map(([title, sub]) => (
-            <div key={title} className="flex items-center justify-between py-4">
-              <div>
-                <p className="text-sm font-bold text-slate-950">{title}</p>
-                <p className="mt-1 text-xs text-slate-500">{sub}</p>
-              </div>
-              <ChevronRight className="h-5 w-5" style={{ color: NAB_RED }} />
-            </div>
-          ))}
+        <div className="mt-7 rounded-xl bg-slate-50 p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+            Checks included
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-700">
+            Age, Vietnam residential address, criminal record status and credit
+            score.
+          </p>
         </div>
       </div>
 
