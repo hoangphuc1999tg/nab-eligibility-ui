@@ -131,21 +131,21 @@ function NationalIdScreen({
       <MobileTopBar title="Home loan eligibility" />
 
       <div className="px-6 pb-28 pt-6">
-        <div className="flex items-start gap-4">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-50">
-            <Home className="h-7 w-7" style={{ color: NAB_RED }} />
-          </div>
+<div className="flex items-start gap-4">
+  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-50">
+    <Home className="h-7 w-7" style={{ color: NAB_RED }} />
+  </div>
 
-          <div>
-            <p className="text-sm text-slate-500">Check your eligibility</p>
-            <h2 className="mt-1 text-2xl font-bold leading-tight text-slate-950">
-              Quick home loan pre-check
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Enter your National ID to check basic eligibility in a few seconds.
-            </p>
-          </div>
-        </div>
+  <div>
+    <p className="text-sm text-slate-500">Check your eligibility</p>
+    <h2 className="mt-1 text-2xl font-bold leading-tight text-slate-950">
+      Quick home loan pre-check
+    </h2>
+    <p className="mt-2 text-sm leading-6 text-slate-600">
+      Enter your National ID to check basic eligibility in a few seconds.
+    </p>
+  </div>
+</div>
 
         <div className="mt-6">
           <label className="block text-sm font-bold text-slate-900">
