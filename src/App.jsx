@@ -117,12 +117,20 @@ function MockupLayout({ children, noteTitle, notes, wide = false }) {
   );
 }
 
-function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
+function NationalIdScreen({
+  nationalId,
+  setNationalId,
+  error,
+  consent,
+  setConsent,
+  consentError,
+  onCheck,
+}) {
   return (
     <IPhoneMockup>
       <MobileTopBar title="Home loan eligibility" />
 
-      <div className="px-6 pt-6">
+      <div className="px-6 pb-32 pt-6">
         <div className="text-center">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
             <Home className="h-8 w-8" style={{ color: NAB_RED }} />
@@ -143,15 +151,16 @@ function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
           </label>
           <input
             value={nationalId}
-            onChange={(event) =>
-              setNationalId(event.target.value.replace(/\D/g, "").slice(0, 12))
-            }
+            onChange={(event) => {
+              setNationalId(event.target.value.replace(/\D/g, "").slice(0, 12));
+            }}
             className={`mt-2 w-full border-b bg-white px-0 py-3 text-lg font-semibold text-slate-950 outline-none focus:border-red-700 ${
               error ? "border-red-600" : "border-slate-300"
             }`}
             placeholder="Enter 12-digit National ID"
             inputMode="numeric"
           />
+
           {error ? (
             <p className="mt-3 text-xs font-semibold leading-5 text-red-700">
               {error}
@@ -163,11 +172,26 @@ function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
           )}
         </div>
 
-        <div className="mt-6">
-          <PrimaryButton onClick={onCheck}>Check eligibility</PrimaryButton>
-        </div>
+        <label className="mt-5 flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(event) => setConsent(event.target.checked)}
+            className="mt-1 h-4 w-4 accent-red-700"
+          />
+          <span className="text-xs leading-5 text-slate-700">
+            I consent to Bank A using my National ID to check my home loan
+            eligibility with authorised data sources.
+          </span>
+        </label>
 
-        <div className="mt-6 divide-y divide-slate-100 border-t border-b border-slate-100">
+        {consentError && (
+          <p className="mt-2 text-xs font-semibold leading-5 text-red-700">
+            {consentError}
+          </p>
+        )}
+
+        <div className="mt-5 divide-y divide-slate-100 border-t border-b border-slate-100">
           {[
             ["What we check", "Age, address, criminal record and credit score"],
             ["Expected time", "Usually under 3 seconds"],
@@ -181,6 +205,10 @@ function NationalIdScreen({ nationalId, setNationalId, error, onCheck }) {
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="absolute bottom-0 left-0 right-0 border-t border-slate-100 bg-white px-6 py-5">
+        <PrimaryButton onClick={onCheck}>Check eligibility</PrimaryButton>
       </div>
     </IPhoneMockup>
   );
